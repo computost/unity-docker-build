@@ -26,15 +26,15 @@ jobs:
           targetPlatform: StandaloneWindows64
           projectPath: unity-docker-build
           buildName: SampleUnityBuild
-          buildsPath: ${{ runner.temp }}/unity/SampleUnityBuild_win64
+          buildsPath: ${{ runner.temp }}/unity
           
       - name: Compress Windows Client
-        working-directory: ${{ runner.temp }}/unity/
-        run: >-
-          zip
-          -r
-          ${{ runner.temp }}/artifacts/SampleUnityBuild_win64.zip
-          SampleUnityBuild_win64
+        run: |
+          cd ${{ runner.temp }}/unity/
+          zip -r \
+            -r \
+            ${{ runner.temp }}/artifacts/SampleUnityBuild_win64.zip \
+            StandaloneWindows64
 
       - name: Upload Publish Artifacts
         uses: actions/upload-artifact@v4
