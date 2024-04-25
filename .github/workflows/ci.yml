@@ -28,6 +28,9 @@ jobs:
           buildName: SampleUnityBuild
           buildsPath: build
           
+      - name: Setup artifact folder
+        run: mkdir ${{ runner.temp }}/artifacts
+          
       - name: Compress Windows Client
         working-directory: build
         run: >-
