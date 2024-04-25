@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <RootNamespace>dotnet_dependencies</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+    
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <PropertyGroup>
+            <TargetDir>..\unity-docker-build\Assets</TargetDir>
+        </PropertyGroup>
+        <ItemGroup>
+            <SourceDir Include="$(OutputPath)\*.dll"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(SourceDir)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true"/>
+    </Target>
+</Project>

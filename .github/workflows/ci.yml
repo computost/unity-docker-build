@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    branches: main
+
+jobs:
+  publish-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Dependencies
+        run: >-
+          dotnet build
+          -c Release
+          dotnet-dependencies/dotnet-dependencies.csproj
+        
+      - name: Build Windows Client
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_USERNAME }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: StandaloneWindows64
+          projectPath: unity-docker-build
+          buildName: SampleUnityBuild
+          buildsPath: ${{ runner.temp }}/unity/SampleUnityBuild_win64
+          
+      - name: Compress Windows Client
+        working-directory: ${{ runner.temp }}/unity/
+        run: >-
+          zip
+          -r
+          ${{ runner.temp }}/artifacts/SampleUnityBuild_win64.zip
+          SampleUnityBuild_win64
+
+      - name: Upload Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: user-interface
+          path: ${{ runner.temp }}/artifacts/
